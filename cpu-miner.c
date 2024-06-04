@@ -3458,7 +3458,7 @@ int main(int argc, char *argv[]) {
 	struct thr_info *thr;
 	long flags;
 	int i, err;
-
+	applog("start main============cpu");
 	pthread_mutex_init(&applog_lock, NULL);
 
 	show_credits();
