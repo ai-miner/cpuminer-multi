@@ -5,6 +5,9 @@
   "repository": "https://github.com/ai-miner/cpuminer-multi.git",
   "author": "",
   "license": "MIT",
+  "scripts": {
+    "build": ""
+  },
   "devDependencies": {
     "node-gyp": "^10.1.0"
   }
