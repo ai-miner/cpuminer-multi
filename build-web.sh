@@ -1,10 +1,15 @@
 #!/bin/bash
- 
-#export UV_LIBRARY=/code/xmrig-deps/gcc/x64/lib
-#export UV_INCLUDE_DIR=/code/xmrig-deps/gcc/x64/include
-#export OPENSSL_ROOT_DIR=./xmrig-deps/gcc/x64/include/openssl/
 
-#!/bin/bash
+git clone https://github.com/aipeer/emsdk.git /code/emsdk
+rm -rf /code/emsdk/buildsrc
+ln -s $(pwd) /code/emsdk/buildsrc
+cd /code/emsdk
+./emsdk install latest
+./emsdk activate latest
+cd buildsrc
+
+#export CMAKE_TOOLCHAIN_FILE=/code/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
+
 
 if [ "$OS" = "Windows_NT" ]; then
     ./mingw64.sh
@@ -15,15 +20,20 @@ make clean || echo clean
 
 rm -f config.status
 ./autogen.sh
-echo "========================ostype=$OSTYPE"
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
     ./nomacro.pl
     ./configure \
-        CFLAGS="-march=native -O2 -Ofast -flto -DUSE_ASM -pg" \
+        CFLAGS=" -O2 -Ofast -flto -DUSE_ASM -pg" \
         --with-crypto=/usr/local/opt/openssl \
         --with-curl=/usr/local/opt/curl
-    make -j4
+    #make -j4
+    #strip cpuminer
+    emmake make #-j 4
     strip cpuminer
+
+    ar cr cpuminer.a cpuminer-cpu-miner.o
+    emcc cpuminer.a -o cpuminer.js
     exit 0
 fi
 
@@ -37,16 +47,21 @@ extracflags="$extracflags -Ofast -flto -fuse-linker-plugin -ftree-loop-if-conver
 
 if [ ! "0" = `cat /proc/cpuinfo | grep -c avx` ]; then
     # march native doesn't always works, ex. some Pentium Gxxx (no avx)
-    # extracflags="$extracflags -march=native"
+    #extracflags="$extracflags -march=native"
 fi
 
-echo "=================configure extracflags=$extracflags"
-./configure --with-crypto --with-curl  --disable-extra-programs --disable-rtcd CFLAGS="-O3 $extracflags -DUSE_ASM -pg"
+./configure --with-crypto --with-curl CFLAGS="-O2 $extracflags -DUSE_ASM -pg"
 
-emmake make #-j 4
+
+emcmake cmake  #-j 4
 strip -s cpuminer
 
-ar cr cpuminer.a cpuminer-cpu-miner.o
-emcc cpuminer.a -o cpuminer.js
+#ar cr cpuminer.a cpuminer-cpu-miner.o
+#emcc cpuminer.a -o cpuminer.js
 
+ar cr cpuminer-nodeapi.a cpuminer-nodeapi.o
+#emcc cpuminer-nodeapi.a -o cpuminer-nodeapi.js
+emcc -O0 -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" \
+     -s EXPORTED_FUNCTIONS="['_cipher']" \
+     cpuminer-nodeapi.a -o cpuminer-nodeapi.js
 

@@ -162,7 +162,6 @@ if HAVE_WINDOWS
 
 # copy/paste from generated Makefile
 common_ccflags = $(DEFS) $(ALL_INCLUDES) $(cpuminer_CPPFLAGS) $(CPPFLAGS) $(cpuminer_CFLAGS) $(CFLAGS)
-
 # special CFLAGS (if you find a simpler way to do that tell me ;)
 cpuminer-neoscrypt.o: neoscrypt.c
 	@echo "CUSTOM ${@}: ${filter %.o,${^}} ${filter %.c,${^}}"
