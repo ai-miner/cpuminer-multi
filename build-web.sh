@@ -1,12 +1,15 @@
 #!/bin/bash
 
-git clone https://github.com/aipeer/emsdk.git /code/emsdk
-rm -rf /code/emsdk/buildsrc
-ln -s $(pwd) /code/emsdk/buildsrc
-cd /code/emsdk
-./emsdk install latest
-./emsdk activate latest
-cd buildsrc
+if [ ! -d "/code/emsdk" ]; then
+    git clone https://github.com/aipeer/emsdk.git /code/emsdk
+    rm -rf /code/emsdk/buildsrc
+    ln -s $(pwd) /code/emsdk/buildsrc
+    cd /code/emsdk
+    ./emsdk install latest
+    ./emsdk activate latest
+    cd buildsrc
+fi
+
 
 #export CMAKE_TOOLCHAIN_FILE=/code/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
 

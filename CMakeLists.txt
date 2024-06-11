@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-# project name
+# 设置项目名
 project(cpuminer VERSION 1.0.0)
 
 # specify the C++ standard
@@ -8,12 +8,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # configure a header file to pass some of the CMake settings
-# to the source code
-target_include_directories(MathFunctions INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+# to the source code 
+# target_include_directories(cpuminer INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_definitions("-s EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]' ")
-add_definitions("-s EXTRA_EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]'")
-add_definitions("-s EXPORTED_FUNCTIONS='[\"_cipher\"]' ")
+add_library(compat INTERFACE)
+
+
 
 #SET_TARGET_PROPERTIES(test PROPERTIES LINK_FLAGS "-s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']")
 
@@ -23,6 +23,7 @@ add_definitions("-s EXPORTED_FUNCTIONS='[\"_cipher\"]' ")
 set(CMAKE_EXECUTABLE_SUFFIX ".js")
 
 set(TD_LINKER_FLAGS "-Wl,--gc-sections -Wl,--exclude-libs,ALL") 
+
 # 编译为可执行任务
 add_executable(cpuminer-nodeapi nodeapi.c)
 # 构建参数相关的，方便构建模块
