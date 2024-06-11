@@ -24,7 +24,7 @@ make clean || echo clean
 rm -f config.status
 ./autogen.sh
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then  
     ./nomacro.pl
     ./configure \
         CFLAGS=" -O2 -Ofast -flto -DUSE_ASM -pg" \
