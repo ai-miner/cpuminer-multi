@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(cpuminer)
+# project name
+project(cpuminer VERSION 1.0.0)
+
+# specify the C++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+target_include_directories(MathFunctions INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_definitions("-s EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]' ")
 add_definitions("-s EXTRA_EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]'")
@@ -9,7 +18,8 @@ add_definitions("-s EXPORTED_FUNCTIONS='[\"_cipher\"]' ")
 #SET_TARGET_PROPERTIES(test PROPERTIES LINK_FLAGS "-s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']")
 
 
-set(CMAKE_CXX_STANDARD 17)
+
+
 set(CMAKE_EXECUTABLE_SUFFIX ".js")
 
 set(TD_LINKER_FLAGS "-Wl,--gc-sections -Wl,--exclude-libs,ALL") 
